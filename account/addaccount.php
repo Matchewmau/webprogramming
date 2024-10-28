@@ -3,68 +3,66 @@
 require_once('../tools/functions.php');
 require_once('../classes/account.class.php');
 
-$first_name = $last_name = $username = $password = $role = '';
-$first_nameErr = $last_nameErr = $usernameErr = $passwordErr = $roleErr ='';
+$firstName = $lastName = $username = $password = $role = $isStaff = $isAdmin = '';
+$firstNameErr = $lastNameErr = $usernameErr = $passwordErr = $roleErr = '';
 
-$productObj = new Account();
+$accountObj = new Account();
 
-if($_SERVER['REQUEST_METHOD'] == 'POST'){
-    
-    $first_name = clean_input($_POST['first_name']);
-    $last_name = clean_input($_POST['last_name']);
-    $username = clean_input($_POST['username']);
-    $password = clean_input($_POST['password']);
-    $role = clean_input($_POST['role']);
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $firstName = clean_input($_POST['first-name'] ?? '');
+    $lastName = clean_input($_POST['last-name'] ?? '');
+    $username = clean_input($_POST['username'] ?? '');
+    $password = clean_input($_POST['password'] ?? '');
+    $role = clean_input($_POST['role'] ?? '');
+    $isStaff = isset($_POST['is-staff']) ? true : false;
+    $isAdmin = isset($_POST['is-admin']) ? true : false;
 
-    if(empty($username)){
+    if (empty($firstName)) {
+        $firstNameErr = 'First name is required.';
+    }
+
+    if (empty($lastName)) {
+        $lastNameErr = 'Last name is required.';
+    }
+
+    if (empty($username)) {
         $usernameErr = 'Username is required.';
-    } else if ($productObj->usernameExist($username, $excludeID)){
+    } else if ($accountObj->usernameExist($username, $excludeID)) {
         $usernameErr = 'Username already exists.';
     }
 
-    if(empty($first_name)){
-        $first_nameErr = 'First Name is required.';
-    }
-
-    if(empty($last_name)){
-        $last_nameErr = 'Last Name is required.';
-    }
-
-    if(empty($password)){
+    if (empty($password)) {
         $passwordErr = 'Password is required.';
     }
 
-    if(empty($role)){
+    if (empty($role)) {
         $roleErr = 'Role is required.';
     }
 
-
     // If there are validation errors, return them as JSON
-    if(!empty($first_nameErr) || !empty($last_nameErr) || !empty($usernameErr) || !empty($passwordErr) || !empty($roleErr)){
+    if (!empty($firstNameErr) || !empty($lastNameErr) || !empty($usernameErr) || !empty($passwordErr) || !empty($roleErr)) {
         echo json_encode([
             'status' => 'error',
-            'first_nameErr' => $first_nameErr,
-            'last_nameErr' => $last_nameErr,
+            'firstNameErr' => $firstNameErr,
+            'lastNameErr' => $lastNameErr,
             'usernameErr' => $usernameErr,
             'passwordErr' => $passwordErr,
-            'roleErr' => $roleErr
+            'roleErr' => $roleErr,
         ]);
         exit;
     }
 
-    if(empty($first_nameErr) && empty($last_nameErr) && empty($usernameErr) && empty($passwordErr) && empty($roleErr)){
-        $productObj->first_name = $first_name;
-        $productObj->last_name = $last_name;
-        $productObj->username = $username;
-        $productObj->password = $password;
-        $productObj->role = $role;
+    $accountObj->first_name = $firstName;
+    $accountObj->last_name = $lastName;
+    $accountObj->username = $username;
+    $accountObj->password = $password;
+    $accountObj->role = $role;
+    $accountObj->is_staff = $isStaff;
+    $accountObj->is_admin = $isAdmin;
 
-        if($productObj->add()){
-            echo json_encode(['status' => 'success']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Something went wrong when adding the new product.']);
-        }
-        exit;
+    if ($accountObj->add()) {
+        echo json_encode(['status' => 'success']);
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Something went wrong when adding the new account.']);
     }
 }
-?>
