@@ -35,6 +35,18 @@ class Account{
         return $query->execute();
     }
 
+    function viewAccounts() {
+        $sql = "SELECT * FROM account ORDER BY role ASC;";
+
+        $query = $this->db->connect()->prepare($sql);
+        $data = null;
+        
+        if ($query->execute()) {
+            $data = $query->fetchAll();
+        }
+        return $data;
+    }
+
     function usernameExist($username, $excludeID){
         $sql = "SELECT COUNT(*) FROM account WHERE username = :username";
         if ($excludeID){

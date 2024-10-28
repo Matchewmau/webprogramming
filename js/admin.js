@@ -18,11 +18,19 @@ $(document).ready(function(){
         viewProducts()
     })
 
+    $('#accounts-link').on('click', function(e) {
+        e.preventDefault()
+        viewAccounts()
+    })
+
+
     let url = window.location.href;
     if (url.endsWith('dashboard')){
         $('#dashboard-link').trigger('click')
     }else if (url.endsWith('products')){
         $('#products-link').trigger('click')
+    }else if (url.endsWith('accounts')){
+        $('#accounts-link').trigger('click')
     }else{
         $('#dashboard-link').trigger('click')
     }
@@ -67,6 +75,66 @@ $(document).ready(function(){
         }
         });
     }
+
+    function viewAccounts() {
+        $.ajax({
+            type: 'GET',
+            url: '../account/view-accounts.php',
+            dataType: 'html',
+            success: function(response){
+                $('.content-page').html(response)
+                
+                var table = $('#table-accounts').DataTable({
+                    dom: 'rtp',
+                    pageLength: 10,
+                    ordering: false,
+                });
+
+                $('#custom-search').on('keyup', function() {
+                    table.search(this.value).draw()
+                });
+
+                $('#add-account').on('click', function(e){
+                    e.preventDefault()
+                    addAccounts()
+                });
+            }
+        })
+    }
+
+    function addAccounts() {
+        $.ajax ({
+            type: 'GET',
+            url: '../account/addaccount.html',
+            dataType: 'html',
+            success: function(view) {
+                $('.modal-container').html(view)
+                $('#staticBackdrop').modal('show')
+
+                $('#form-add-account').on('submit', function(e){
+                    e.preventDefault()
+                    saveAccount()
+                })
+            }
+        })
+    }
+
+    function saveAccount() {
+        $.ajax({
+            type: 'POST',
+            url: '../account/addaccount.php', // URL to your save script
+            data: $('#form-add-account').serialize(),
+            success: function(response) {
+                $('#staticBackdrop').modal('hide'); // Hide modal on success
+                viewAccounts();  // Reload accounts table to show new entry
+            },
+            error: function() {
+                alert("An error occurred. Please try again.");
+            }
+        });
+    }
+    
+    
 
     function viewProducts(){
         $.ajax({

@@ -1,3 +1,4 @@
+-- Active: 1728929542728@@127.0.0.1@3306@sample_db
 -- phpMyAdmin SQL Dump
 -- version 5.1.1
 -- https://www.phpmyadmin.net/

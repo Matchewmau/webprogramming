@@ -10,9 +10,10 @@ if(isset($_SESSION['account'])){
     header('location: login.php');
 }
 
-require_once('functions.php');
-require_once('product.class.php');
-require_once('stocks.class.php');
+require_once('../stocks/stocks.php');
+require_once('../classes/product.class.php');
+require_once('../classes/stocks.class.php');
+require_once('../tools/functions.php');
 
 $name = $quantity = $status = $reason = '';
 $quantityErr = $statusErr = $reasonErr = '';
@@ -73,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
         $stocksObj->reason = $reason;
 
         if ($stocksObj->add()) {
-            header('Location: product.php');
+            header('Location: ../products/product.php');
         } else {
             echo 'Something went wrong when stocking the product';
         }

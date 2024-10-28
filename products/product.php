@@ -3,10 +3,10 @@
 
     if(isset($_SESSION['account'])){
         if(!$_SESSION['account']['is_staff']){
-            header('location: login.php');
+            header('location: ../account/login.php');
         }
     }else{
-        header('location: login.php');
+        header('location: ../account/login.php');
     }
 ?>
 
@@ -28,7 +28,7 @@
     <a href="addproduct.php">Add Product</a>
     
     <?php
-        require_once 'product.class.php';
+        require_once '../classes/product.class.php';
 
         $productObj = new Product();
 
