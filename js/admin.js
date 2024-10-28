@@ -144,6 +144,18 @@ $(document).ready(function(){
         })
     }
 
+    function deleteAccount(id) {
+        $.ajax({
+            url: '../accounts/delete-account.php?id=' + id,
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    viewAccounts();
+                }
+            }
+        })
+    }
+
     function saveAccount() {
         $.ajax({
             type: 'POST',

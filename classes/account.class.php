@@ -65,6 +65,17 @@ class Account{
         return $count > 0;
     }
 
+    function getId($id){
+        $sql = 'SELECT * FROM account WHERE id = :id';
+        $query = $this->db->connect()->prepare($sql);
+        $query->bindParam(':id', $id);
+        $data = null;
+        if ($query->execute()) {
+            $data = $query->fetch();
+        }
+        return $data;
+    }
+
     function login($username, $password){
         $sql = "SELECT * FROM account WHERE username = :username LIMIT 1;";
         $query = $this->db->connect()->prepare($sql);
@@ -92,6 +103,14 @@ class Account{
         }
 
         return $data;
+    }
+
+    function delete() {
+        $sql = 'DELETE FROM account WHERE id=:id';
+        $query = $this->db->connect()->prepare($sql);
+        $query->bindParam(':id', $this->id);
+
+        return $query->execute();
     }
 }
 
